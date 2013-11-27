@@ -97,6 +97,10 @@ node['jenkins']['server']['plugins'].each do |plugin|
   end
 end
 
+# Configure some plugins
+#
+include_recipe "jenkins::_server_configure_plugins"
+
 ruby_block 'block_until_operational' do
   block do
     Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}"
@@ -119,3 +123,10 @@ log 'ensure_jenkins_is_running' do
   notifies :start, 'service[jenkins]', :immediately
   notifies :create, 'ruby_block[block_until_operational]', :immediately
 end
+
+# Jobs batch configuration
+# 
+if node['jenkins']['server']['databag_jobs']['enabled']
+	include_recipe "jenkins::_server_jobs"
+end
+
