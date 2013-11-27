@@ -93,13 +93,13 @@ private
 
 def platform_labels
   platform_labels = []
-  platform_labels << node['platform'] # ubuntu
-  platform_labels << node['platform_family'] # debian
-  platform_labels << node['platform_version'] # 10.04
+#  platform_labels << node['platform'] # ubuntu
+#  platform_labels << node['platform_family'] # debian
+#  platform_labels << node['platform_version'] # 10.04
   platform_labels << "#{node['platform']}-#{node['platform_version']}" # ubuntu-10.04
-  platform_labels << node['kernel']['machine'] # x86_64
-  platform_labels << node['os'] # linux
-  platform_labels << node['os_version'] # 2.6.32-38-server
-  platform_labels << node['virtualization']['system'] if node.attribute?('virtualization') # xen
+#  platform_labels << node['kernel']['machine'] # x86_64
+#  platform_labels << node['os'] # linux
+#  platform_labels << node['os_version'] # 2.6.32-38-server
+#  platform_labels << node['virtualization']['system'] if node.attribute?('virtualization') # xen
   platform_labels
 end
