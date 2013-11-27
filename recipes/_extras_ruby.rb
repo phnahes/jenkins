@@ -1,8 +1,8 @@
-# 
-# Author:: Seth Chisamore <schisamo@opscode.com>
+#
+# Author:: Paulo Nahes <phnahes@gmail.com>
 #
 # Cookbook Name:: jenkins
-# Recipe:: node
+# Recipe:: extras_ruby
 #
 # Copyright 2013, Opscode, Inc.
 #
@@ -19,11 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "jenkins::_node_#{node['jenkins']['node']['agent_type']}"
-
-# Extra Packages
-#
-pack_list = node['jenkins']['node']['extras']['packages']
+pack_list = node['jenkins']['node']['extras']['ruby_pkgs']
 pack_list.each do |pkg|
   package pkg do
     options "--force-yes"
@@ -33,24 +29,7 @@ end
 
 # Ruby
 #
-if node['jenkins']['node']['extras']['use_ruby']
-	include_recipe "jenkins::_extras_ruby"
+link "/usr/bin/bundle19" do
+        to "/usr/bin/bundle"
 end
 
-# Maven
-#
-if node['jenkins']['node']['extras']['use_maven']
-	include_recipe "jenkins::_extras_maven"
-end
-
-# Ant
-#
-if node['jenkins']['node']['extras']['use_ant']
-	include_recipe "jenkins::_extras_ant"
-end
-
-# Git Checkout
-#
-if node['jenkins']['node']['extras']['use_git']
-	include_recipe "jenkins::_extras_git"
-end

@@ -1,8 +1,8 @@
-# 
-# Author:: Seth Chisamore <schisamo@opscode.com>
+#
+# Author:: Paulo Nahes <phnahes@gmail.com>
 #
 # Cookbook Name:: jenkins
-# Recipe:: node
+# Recipe:: extras_ant
 #
 # Copyright 2013, Opscode, Inc.
 #
@@ -19,11 +19,9 @@
 # limitations under the License.
 #
 
-include_recipe "jenkins::_node_#{node['jenkins']['node']['agent_type']}"
-
-# Extra Packages
+# Ant
 #
-pack_list = node['jenkins']['node']['extras']['packages']
+pack_list = node['jenkins']['node']['extras']['ant_pkgs']
 pack_list.each do |pkg|
   package pkg do
     options "--force-yes"
@@ -31,26 +29,20 @@ pack_list.each do |pkg|
   end
 end
 
-# Ruby
-#
-if node['jenkins']['node']['extras']['use_ruby']
-	include_recipe "jenkins::_extras_ruby"
+template "#{node['jenkins']['node']['home']}/hudson.tasks.Ant.xml" do
+	source "ant/hudson.tasks.Ant.xml.erb"
+	owner node['jenkins']['node']['user']
+	group node['jenkins']['node']['group']
+	mode '0644'
 end
 
-# Maven
-#
-if node['jenkins']['node']['extras']['use_maven']
-	include_recipe "jenkins::_extras_maven"
+# Ivy jar
+cookbook_file "#{node['jenkins']['node']['extras']['jar_path']}/ivy-2.2.0.jar" do
+	source "jar/ivy-2.2.0.jar"
+	owner 'root'
+	group 'root'
+	mode '0644'
 end
-
-# Ant
-#
-if node['jenkins']['node']['extras']['use_ant']
-	include_recipe "jenkins::_extras_ant"
-end
-
-# Git Checkout
-#
-if node['jenkins']['node']['extras']['use_git']
-	include_recipe "jenkins::_extras_git"
+link "#{node['jenkins']['node']['extras']['ant_path']}/ivy-2.2.0.jar" do
+	to "#{node['jenkins']['node']['extras']['jar_path']}/ivy-2.2.0.jar"
 end

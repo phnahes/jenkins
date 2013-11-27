@@ -36,14 +36,14 @@ when 'mac_os_x'
   default['jenkins']['node']['log_dir']  = '/var/log/jenkins'
   default['jenkins']['node']['agent_type'] = 'jnlp'
 else
-  default['jenkins']['node']['home'] = '/home/jenkins'
+  default['jenkins']['node']['home'] = '/var/lib/jenkins'
   default['jenkins']['node']['log_dir']  = '/var/log/jenkins'
   default['jenkins']['node']['agent_type'] = 'jnlp'
 end
 
-default['jenkins']['node']['user'] = 'jenkins-node'
-default['jenkins']['node']['group'] = 'jenkins-node'
-default['jenkins']['node']['shell'] = '/bin/sh'
+default['jenkins']['node']['user'] = 'jenkins'
+default['jenkins']['node']['group'] = 'users'
+default['jenkins']['node']['shell'] = '/bin/bash'
 default['jenkins']['node']['name'] = node['fqdn']
 default['jenkins']['node']['description'] =
   "#{node['platform']} #{node['platform_version']} " <<
@@ -53,7 +53,7 @@ default['jenkins']['node']['labels'] = (node['tags'] || [])
 
 default['jenkins']['node']['env'] = nil
 default['jenkins']['node']['jvm_options'] = nil
-default['jenkins']['node']['executors'] = 1
+default['jenkins']['node']['executors'] = 10
 default['jenkins']['node']['in_demand_delay'] = 0
 default['jenkins']['node']['idle_delay'] = 1
 
@@ -73,3 +73,27 @@ default['jenkins']['node']['ssh_port'] = 22
 default['jenkins']['node']['ssh_user'] = default['jenkins']['node']['user']
 default['jenkins']['node']['ssh_pass'] = nil
 default['jenkins']['node']['ssh_private_key'] = nil
+
+# Extra Packages
+default['jenkins']['node']['extras']['packages'] = ["git", "rpm", "debhelper", "python-setuptools", "python-dev"]
+
+# Ruby Options
+default['jenkins']['node']['extras']['use_ruby'] = true
+default['jenkins']['node']['extras']['ruby_pkgs'] = ["libbundler-ruby1.9.1", "ruby1.9.1-dev", "rake"]
+
+# Maven Options
+default['jenkins']['node']['extras']['use_maven'] = true
+default['jenkins']['node']['extras']['archiva_url'] = "archiva.com"
+default['jenkins']['node']['extras']['archiva_user'] = "user"
+default['jenkins']['node']['extras']['archiva_pass'] = "pass"
+default['jenkins']['node']['extras']['maven_pkgs'] = ["maven2", "default-jdk"]
+
+# Ant Options
+default['jenkins']['node']['extras']['use_ant'] = true
+default['jenkins']['node']['extras']['jar_path'] = "/usr/share/java"
+default['jenkins']['node']['extras']['ant_path'] = "/usr/share/ant/lib"
+default['jenkins']['node']['extras']['ant_pkgs'] = ["ant", "default-jdk"]
+
+
+# Git Options
+default['jenkins']['node']['extras']['use_git'] = false

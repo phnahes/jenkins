@@ -1,8 +1,8 @@
-# 
-# Author:: Seth Chisamore <schisamo@opscode.com>
+#
+# Author:: Paulo Nahes <phnahes@gmail.com>
 #
 # Cookbook Name:: jenkins
-# Recipe:: node
+# Recipe:: extras_maven
 #
 # Copyright 2013, Opscode, Inc.
 #
@@ -19,11 +19,9 @@
 # limitations under the License.
 #
 
-include_recipe "jenkins::_node_#{node['jenkins']['node']['agent_type']}"
-
-# Extra Packages
+# Maven
 #
-pack_list = node['jenkins']['node']['extras']['packages']
+pack_list = node['jenkins']['node']['extras']['maven_pkgs']
 pack_list.each do |pkg|
   package pkg do
     options "--force-yes"
@@ -31,26 +29,20 @@ pack_list.each do |pkg|
   end
 end
 
-# Ruby
-#
-if node['jenkins']['node']['extras']['use_ruby']
-	include_recipe "jenkins::_extras_ruby"
+directory "#{node['jenkins']['node']['home']}/.m2" do
+	owner node['jenkins']['node']['user']
+	group node['jenkins']['node']['group']
+	mode '0755'
 end
 
-# Maven
-#
-if node['jenkins']['node']['extras']['use_maven']
-	include_recipe "jenkins::_extras_maven"
-end
-
-# Ant
-#
-if node['jenkins']['node']['extras']['use_ant']
-	include_recipe "jenkins::_extras_ant"
-end
-
-# Git Checkout
-#
-if node['jenkins']['node']['extras']['use_git']
-	include_recipe "jenkins::_extras_git"
+template "#{node['jenkins']['node']['home']}/.m2/settings.xml" do
+	source "maven/settings.xml.erb"
+	owner node['jenkins']['node']['user']
+	group node['jenkins']['node']['group']
+	mode '0644'
+	variables(
+	    :url	=> node['jenkins']['node']['extras']['archiva_url'],
+	    :user	=> node['jenkins']['node']['extras']['archiva_user'],
+	    :pass	=> node['jenkins']['node']['extras']['archiva_pass']
+	)
 end
