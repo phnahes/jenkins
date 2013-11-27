@@ -22,7 +22,8 @@
 include_recipe 'nginx::default'
 
 www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == 'enable')
-host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
+#host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
+host_name = node['jenkins']['http_proxy']['host_name']
 
 template "#{node['nginx']['dir']}/htpasswd" do
   variables(:username => node['jenkins']['http_proxy']['basic_auth_username'],
