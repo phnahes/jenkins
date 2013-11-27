@@ -1,4 +1,4 @@
-#
+# 
 # Cookbook Name:: jenkins
 # Attributes:: server
 #
@@ -34,28 +34,31 @@ when 'debian'
   default['jenkins']['server']['config_path'] = '/etc/default/jenkins'
   default['jenkins']['server']['config_template'] = 'default.erb'
   default['jenkins']['server']['log_dir_permissions'] = 00755
-  default['jenkins']['server']['home_dir_group'] = 'adm'
-  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['log_dir_group'] = 'adm'
-  default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
+  default['jenkins']['server']['group'] = 'users'
+  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['group']
 when 'rhel'
   default['jenkins']['server']['install_method'] = 'package'
-  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  #default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['group'] = 'users'
   default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
   default['jenkins']['server']['config_template'] = 'sysconfig.erb'
   default['jenkins']['server']['log_dir_permissions'] = 00750
-  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['group']
 else
   default['jenkins']['server']['install_method'] = 'war'
-  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  #default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['group'] = 'users'
   default['jenkins']['server']['log_dir_permissions'] = 00755
-  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
-  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['group']
+  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['group']
 end
 
 default['jenkins']['server']['version'] = nil
@@ -65,14 +68,17 @@ default['jenkins']['server']['port'] = 8080
 default['jenkins']['server']['host'] = node['fqdn']
 default['jenkins']['server']['url']  = "http://#{default['jenkins']['server']['host']}:#{default['jenkins']['server']['port']}"
 
-default['jenkins']['server']['plugins'] = []
+default['jenkins']['server']['plugins'] = ["ant", "filesystem_scm","greenballs", "jquery","jquery-ui","ldap","sidebar-link", "status-view","ssh", "publish-over-ssh", "git-client", "git", "credentials"]
 default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
+default['jenkins']['server']['databag_jobs']['enabled'] = true
+
 default['jenkins']['http_proxy']['variant'] = 'nginx'
-default['jenkins']['http_proxy']['www_redirect'] = 'disable'
+default['jenkins']['http_proxy']['www_redirect'] = 'enable'
 default['jenkins']['http_proxy']['listen_ports'] = [80]
-default['jenkins']['http_proxy']['host_name'] = nil
+#default['jenkins']['http_proxy']['host_name'] = nil
+default['jenkins']['http_proxy']['host_name'] = "jenkins.domain.com.br"
 default['jenkins']['http_proxy']['host_aliases'] = []
 default['jenkins']['http_proxy']['client_max_body_size'] = '1024m'
 default['jenkins']['http_proxy']['basic_auth_username'] = 'jenkins'
@@ -86,3 +92,10 @@ default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [443]
 default['jenkins']['http_proxy']['ssl']['dir'] = "#{default['jenkins']['server']['home']}/ssl"
 default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.cert"
 default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"
+
+default['jenkins']['server']['repo']['name'] = "Repo-Server1"
+default['jenkins']['server']['repo']['hostname'] = "reposerver1.domain_example.com.br"
+default['jenkins']['server']['repo']['username'] = "deployer"
+default['jenkins']['server']['repo']['keypath'] = "#{default['jenkins']['server']['home']}/.ssh/id_rsa"
+
+
