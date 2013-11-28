@@ -126,7 +126,7 @@ def new_ssh_launcher(args) {
 }
 
 if (env != null) {
-  entries = env.map { k,v -> new EnvironmentVariablesNodeProperty.Entry(k,v) }
+  entries = env.collect { k,v -> new EnvironmentVariablesNodeProperty.Entry(k,v) }
   props << new EnvironmentVariablesNodeProperty(entries)
 }
 
